@@ -20,3 +20,5 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
   - app.UseRouting() - marks the pos in mw pipeline where routing decision is made
   - app.UseEndpoints() - marks pos in mw where sleected ep is executed
 - attribute routing - route at controller and action level
+  - route at controller level
+    - ```[Route("api/[controller])]```
