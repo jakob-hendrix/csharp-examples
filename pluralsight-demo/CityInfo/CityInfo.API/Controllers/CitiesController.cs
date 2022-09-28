@@ -1,6 +1,5 @@
 ﻿using CityInfo.API.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
 
 namespace CityInfo.API.Controllers
 {
@@ -16,10 +15,10 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CityDto> GetCity(int Id)
+        public ActionResult<CityDto> GetCity(int id)
         {
             // unhandled exceptions return 500
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == Id);
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
             if (city == null)
             {
                 return NotFound();
