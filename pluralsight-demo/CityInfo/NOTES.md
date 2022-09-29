@@ -53,7 +53,7 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
 
 ## Sending Files
 
-- you can totaly just send files out of an api. Cool.
+- you can totally just send files out of an api. Cool.
 
 ## Content Negotiation
 
@@ -64,6 +64,32 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
       - application/xml
     - ASP.NET Core output formatters (accept header) & input formatters (content-type header)
       - support buoilt into ObjectResult
+
+## Passing Data to API
+
+- defult API.NET Core tries to use a complex model binder
+- API uses attributes
+  - [FromBody] - complex types
+  - [FromForm] - IFormfile
+  - [FromRoute] - inferred for any action parameter name matching a parameter in the route template
+  - [FromQuery] - from any other action param
+- what is sent to the API is not necesaarily what is return by API or stored in data store
+  - a DTO with an Id is a good example. That something usually assigned by the server
+    - use diff DTO for creating and 
+- `CreatedAtRoute()` - returns a way to get the just created item, along with the new item
+  - 201 response - created
+
+## Validating 
+
+- return 400 for client errors
+- api controller automatically returns 400 if the model state is not IsValid
+- attributes are fine, but they combine rules with models
+- look into FluidValidation
+
+## Rules
+
+- use diff DTO for creating vs returning an item
+  
 ## Common Mistakes
 
 - returning 200 when something is wrong
