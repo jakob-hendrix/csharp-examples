@@ -92,6 +92,14 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
 - you can update partial values using a PATCH
   - JSON patch doc is a list of operations - Microsoft.AspNetCore.JsonPatch
 
+## IoC & DI
+
+- IoC delegates the function of slecting a concrete implelneation type for a class' dependecies to an external component
+  - work against interfaces, not concrete classes
+  - Transient - created each time they are requested - best for light weight services
+  - Scoped - create once per request
+  - Singleton - created 1st time whe requested
+
 ## Rules
 
 - use diff DTO for creating vs returning an item
