@@ -41,9 +41,7 @@ namespace CityInfo.API.Controllers
         public ActionResult<PointOfInterestDto> CreatePointOfInterest(
             int cityId, 
             PointOfInterestCreationDto pointOfInterest)
-        { 
-            
-
+        {
             var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
             {
@@ -70,6 +68,29 @@ namespace CityInfo.API.Controllers
                 },
                 finalPointOfInterest
                 );
+        }
+        [HttpPut("{pointofinterestId}")]
+        public ActionResult<PointOfInterestDto> UpdatePointOfInterest(
+            int cityId, 
+            int pointOfInterestId, 
+            PointOfInterestUpdateDto pointOfInterest)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+            var savedPointOfInterest = city.PointsOfInterest.FirstOrDefault(p => p.Id == pointOfInterestId);
+            if (savedPointOfInterest == null)
+            {
+                return NotFound();
+            }
+
+            // consumer of API must provide values for all fields. If not provided, set to default
+            savedPointOfInterest.Name = pointOfInterest.Name;
+            savedPointOfInterest.Description = pointOfInterest.Description;
+
+            return NoContent();
         }
     }
 }

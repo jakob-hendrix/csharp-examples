@@ -75,11 +75,11 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
   - [FromQuery] - from any other action param
 - what is sent to the API is not necesaarily what is return by API or stored in data store
   - a DTO with an Id is a good example. That something usually assigned by the server
-    - use diff DTO for creating and 
+    - use diff DTO for creating and
 - `CreatedAtRoute()` - returns a way to get the just created item, along with the new item
   - 201 response - created
 
-## Validating 
+## Validating
 
 - return 400 for client errors
 - api controller automatically returns 400 if the model state is not IsValid
@@ -89,7 +89,7 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
 ## Rules
 
 - use diff DTO for creating vs returning an item
-  
+
 ## Common Mistakes
 
 - returning 200 when something is wrong
