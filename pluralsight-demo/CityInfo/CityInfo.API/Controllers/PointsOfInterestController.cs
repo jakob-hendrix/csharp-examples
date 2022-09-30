@@ -70,6 +70,7 @@ namespace CityInfo.API.Controllers
                 finalPointOfInterest
                 );
         }
+
         [HttpPut("{pointofinterestId}")]
         public ActionResult<PointOfInterestDto> UpdatePointOfInterest(
             int cityId, 
@@ -95,7 +96,7 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpPatch("{pointofinterestId}")]
-        public ActionResult<PointOfInterestDto> PartiallyUpdatePointOfInterest(
+        public ActionResult PartiallyUpdatePointOfInterest(
             int cityId,
             int pointOfInterestId,
             JsonPatchDocument<PointOfInterestUpdateDto> patchDocument)
@@ -130,6 +131,25 @@ namespace CityInfo.API.Controllers
             savedPointOfInterest.Name = pointOfInterestToPatch.Name;
             savedPointOfInterest.Description = pointOfInterestToPatch.Description;
 
+            return NoContent();
+        }
+
+        [HttpDelete("{pointofinterestId}")]
+        public ActionResult DeletePointOfInterest(int cityId, int pointOfInterestId) 
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            var pointOfInterest = city.PointsOfInterest.FirstOrDefault(p => p.Id == pointOfInterestId);
+            if (pointOfInterest == null)
+            {
+                return NotFound();
+            }
+
+            city.PointsOfInterest.Remove(pointOfInterest);
             return NoContent();
         }
     }
