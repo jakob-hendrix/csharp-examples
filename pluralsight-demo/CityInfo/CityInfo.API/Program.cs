@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.StaticFiles;
 
+// this registers various loggers
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Add services to the container.
 
