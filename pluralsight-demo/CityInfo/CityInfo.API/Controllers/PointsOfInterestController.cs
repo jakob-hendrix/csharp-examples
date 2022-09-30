@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
@@ -89,6 +90,45 @@ namespace CityInfo.API.Controllers
             // consumer of API must provide values for all fields. If not provided, set to default
             savedPointOfInterest.Name = pointOfInterest.Name;
             savedPointOfInterest.Description = pointOfInterest.Description;
+
+            return NoContent();
+        }
+
+        [HttpPatch("{pointofinterestId}")]
+        public ActionResult<PointOfInterestDto> PartiallyUpdatePointOfInterest(
+            int cityId,
+            int pointOfInterestId,
+            JsonPatchDocument<PointOfInterestUpdateDto> patchDocument)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+            var savedPointOfInterest = city.PointsOfInterest.FirstOrDefault(p => p.Id == pointOfInterestId);
+            if (savedPointOfInterest == null)
+            {
+                return NotFound();
+            }
+
+            // Create an intermediate update DTO that defaults to the current value
+            var pointOfInterestToPatch =
+                new PointOfInterestUpdateDto()
+                {
+                    Name = savedPointOfInterest.Name,
+                    Description = savedPointOfInterest.Description
+                };
+            
+            patchDocument.ApplyTo(pointOfInterestToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Complete the update
+            savedPointOfInterest.Name = pointOfInterestToPatch.Name;
+            savedPointOfInterest.Description = pointOfInterestToPatch.Description;
 
             return NoContent();
         }

@@ -86,6 +86,12 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
 - attributes are fine, but they combine rules with models
 - look into FluidValidation
 
+## Put/Patch
+
+- can return the response as the content, or return nothing
+- you can update partial values using a PATCH
+  - JSON patch doc is a list of operations - Microsoft.AspNetCore.JsonPatch
+
 ## Rules
 
 - use diff DTO for creating vs returning an item
