@@ -1,6 +1,8 @@
 using CityInfo.API;
+using CityInfo.API.DbContexts;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -31,6 +33,10 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
     .AddSingleton<CitiesDataStore>()
+    .AddDbContext<CityInfoContext>(options =>
+        {
+            options.UseSqlite("Data Source=CityInfo.db");
+        })
     .AddSingleton<FileExtensionContentTypeProvider>();  // allows injecting file content provider
 
 #if DEBUG

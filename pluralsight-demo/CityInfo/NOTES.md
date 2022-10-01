@@ -108,6 +108,10 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
 - entities
   - different than models - often the shape of data presented by an API is different that how it is stored in data store
   - foreign keys - convention when a "navigation typoe" is mapped. This is a field that is not a scalar type
+  - field resctritions should be applies tat the lowest possiblke level - in our case - the Db
+- DBContexts
+  - larger apps could use multiple contexts
+  - provide connection string via ctor so we can set it up in configuration
 
 ## Rules
 
