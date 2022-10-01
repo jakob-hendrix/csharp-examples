@@ -1,4 +1,5 @@
 ﻿using CityInfo.API.Models;
+using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CityInfo.API.Controllers
@@ -8,29 +9,47 @@ namespace CityInfo.API.Controllers
     //[Route("api/[controller]")]
     public class CitiesController : ControllerBase
     {
-        private readonly CitiesDataStore _citiesDataStore;
+        private readonly ICityInfoRepository _cityInfoRepository;
 
-        public CitiesController(CitiesDataStore citiesDataStore)
+        public CitiesController(ICityInfoRepository cityInfoRepository)
         {
-            _citiesDataStore = citiesDataStore ?? throw new ArgumentNullException(nameof(citiesDataStore));
+            _cityInfoRepository = cityInfoRepository 
+                                  ?? throw new ArgumentNullException(nameof(cityInfoRepository));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CityDto>> GetCities()
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities()
         {
-            return Ok(_citiesDataStore.Cities);
+            var cities = await _cityInfoRepository.GetCitiesAsync();
+
+            // map to city DTO
+            var results = new List<CityWithoutPointsOfInterestDto>();
+            foreach (var entity in cities)
+            {       
+                results.Add(new CityWithoutPointsOfInterestDto
+                {
+                    Id = entity.Id,
+                    Description = entity.Description,
+                    Name = entity.Name
+                });
+            }
+
+            return Ok(results);
+
+            //return Ok(_citiesDataStore.Cities);
         }
 
         [HttpGet("{id}")]
         public ActionResult<CityDto> GetCity(int id)
         {
             // unhandled exceptions return 500
-            var city = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == id);
-            if (city == null)
-            {
-                return NotFound();
-            }
-            return Ok(city);
+            //var city = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == id);
+            //if (city == null)
+            //{
+            //    return NotFound();
+            //}
+            //return Ok(city);
+            return NotFound();
         }
     }
 }
