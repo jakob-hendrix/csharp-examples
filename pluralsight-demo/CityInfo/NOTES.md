@@ -119,6 +119,17 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
 
 https://learn.microsoft.com/en-us/ef/core/cli/dotnet
 
+- Connections Strings
+  - config for dev
+  - ENV/ Azure Keyvault, etc for prod
+
+- Repository Pattern
+  - benefits - less duplication, easier to test
+  - what is?: abstraction that reduces complexity and aims to make the code persistence ignorant
+  - returns
+    - IEnumerable
+    - IQueryable - add queries into it
+
 ## Rules
 
 - use diff DTO for creating vs returning an item

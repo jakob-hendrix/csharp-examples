@@ -37,6 +37,7 @@ builder.Services
         {
             options.UseSqlite(builder.Configuration["ConnectionStrings:CityInfoDbConnectionString"]);
         })
+    .AddScoped<ICityInfoRepository, CityInfoRepository>()
     .AddSingleton<FileExtensionContentTypeProvider>();  // allows injecting file content provider
 
 #if DEBUG
