@@ -32,7 +32,7 @@ builder.Services
 builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .AddSingleton<CitiesDataStore>()
+//    .AddSingleton<CitiesDataStore>()
     .AddDbContext<CityInfoContext>(options =>
         {
             options.UseSqlite("Data Source=CityInfo.db");
