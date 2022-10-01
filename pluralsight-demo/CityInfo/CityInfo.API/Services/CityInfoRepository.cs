@@ -47,5 +47,7 @@ namespace CityInfo.API.Services
                 .Where(p => p.CityId == cityId && p.Id == pointOfInterestId)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<bool> CityExistsAsync(int cityId) => await _context.Cities.AnyAsync(c => c.Id == cityId);
     }
 }
