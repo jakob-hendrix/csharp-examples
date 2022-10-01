@@ -112,6 +112,12 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
 - DBContexts
   - larger apps could use multiple contexts
   - provide connection string via ctor so we can set it up in configuration
+- Migrations
+  - nuget - ef core tools
+  - add-migrations {name}
+  - update-database - apply migrations
+
+https://learn.microsoft.com/en-us/ef/core/cli/dotnet
 
 ## Rules
 
