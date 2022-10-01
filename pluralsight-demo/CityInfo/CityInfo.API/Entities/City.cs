@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CityInfo.API.Models;
 
 namespace CityInfo.API.Entities
 {
@@ -18,8 +17,8 @@ namespace CityInfo.API.Entities
         public string? Description { get; set; }
 
         // list of children
-        public ICollection<PointOfInterestDto> PointsOfInterest { get; set; }
-            = new List<PointOfInterestDto>();
+        public ICollection<PointOfInterest> PointsOfInterest { get; set; }
+            = new List<PointOfInterest>();
 
         public City(string name)
         {
