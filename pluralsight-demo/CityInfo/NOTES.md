@@ -129,6 +129,20 @@ https://learn.microsoft.com/en-us/ef/core/cli/dotnet
   - returns
     - IEnumerable
     - IQueryable - add queries into it
+  - Async?
+    - async is for scalability, not performance - frees a thread
+      - pulls thread - thread is returned to pool. Once IO is done, thread can be used elswhere. Further requests can pool a diff thread.
+    - syncronous
+      - thread pool
+      - each subsquent requst needs a new thread - thread is locked until action is complete
+      - if it takes too long, 504 error possible
+
+### Automapper
+
+- register with profiles
+  - Add assemblies -> /profiles/{profile} that inherits from Profile
+- By default, maps by field names
+- remmeber to map in both directions as needed
 
 ## Rules
 
