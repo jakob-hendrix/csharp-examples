@@ -35,7 +35,7 @@ builder.Services
 //    .AddSingleton<CitiesDataStore>()
     .AddDbContext<CityInfoContext>(options =>
         {
-            options.UseSqlite("Data Source=CityInfo.db");
+            options.UseSqlite(builder.Configuration["ConnectionStrings:CityInfoDbConnectionString"]);
         })
     .AddSingleton<FileExtensionContentTypeProvider>();  // allows injecting file content provider
 
