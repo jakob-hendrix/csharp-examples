@@ -100,6 +100,15 @@ Course URL: https://app.pluralsight.com/library/courses/asp-dot-net-core-6-web-a
   - Scoped - create once per request
   - Singleton - created 1st time whe requested
 
+## EF Core
+
+- ORM - object relational mapper
+- in code, work on objects, instead of direct SQL
+- supports lots of DBs - even non-relational
+- entities
+  - different than models - often the shape of data presented by an API is different that how it is stored in data store
+  - foreign keys - convention when a "navigation typoe" is mapped. This is a field that is not a scalar type
+
 ## Rules
 
 - use diff DTO for creating vs returning an item
