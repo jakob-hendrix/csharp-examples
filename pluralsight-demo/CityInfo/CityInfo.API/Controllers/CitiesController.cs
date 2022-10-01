@@ -1,4 +1,5 @@
-﻿using CityInfo.API.Models;
+﻿using AutoMapper;
+using CityInfo.API.Models;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,31 +11,35 @@ namespace CityInfo.API.Controllers
     public class CitiesController : ControllerBase
     {
         private readonly ICityInfoRepository _cityInfoRepository;
+        private readonly IMapper _mapper;
 
-        public CitiesController(ICityInfoRepository cityInfoRepository)
+        public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
             _cityInfoRepository = cityInfoRepository 
                                   ?? throw new ArgumentNullException(nameof(cityInfoRepository));
+            _mapper = mapper
+                ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities()
         {
             var cities = await _cityInfoRepository.GetCitiesAsync();
+            return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cities));
 
-            // map to city DTO
-            var results = new List<CityWithoutPointsOfInterestDto>();
-            foreach (var entity in cities)
-            {       
-                results.Add(new CityWithoutPointsOfInterestDto
-                {
-                    Id = entity.Id,
-                    Description = entity.Description,
-                    Name = entity.Name
-                });
-            }
+            // manually map to city DTO
+            //var results = new List<CityWithoutPointsOfInterestDto>();
+            //foreach (var entity in cities)
+            //{       
+            //    results.Add(new CityWithoutPointsOfInterestDto
+            //    {
+            //        Id = entity.Id,
+            //        Description = entity.Description,
+            //        Name = entity.Name
+            //    });
+            //}
 
-            return Ok(results);
+            //return Ok(results);
 
             //return Ok(_citiesDataStore.Cities);
         }

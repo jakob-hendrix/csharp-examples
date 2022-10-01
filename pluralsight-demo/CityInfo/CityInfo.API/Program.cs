@@ -32,6 +32,7 @@ builder.Services
 builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
+    .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
 //    .AddSingleton<CitiesDataStore>()
     .AddDbContext<CityInfoContext>(options =>
         {
