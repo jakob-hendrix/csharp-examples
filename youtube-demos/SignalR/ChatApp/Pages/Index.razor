@@ -1,0 +1,91 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Models
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+
+<div class="container overflow-auto shadow-sm p-3 mb-5 bg-white rounded" style="height: 500px;">
+    @if (!userMessages.Any())
+    {
+        <p>This chat is empty...</p>
+    }
+    
+    @foreach (var message in userMessages)
+    {
+        <div class="row mb-3 d-flex @(message.IsCurrentUser ? "justify-content-end" : "")">
+            <div class="card shadow @(message.IsCurrentUser ? "color-green mr-5" : "")" style="width: 18rem;">
+                <div class="card-header">@message.Username</div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">@message.Message</li>
+                </ul>
+                <div class="card-footer">
+                    <span class="small">@message.DateSent.ToString("HH:mm | MMM dd")</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <input @bind="userNameInput" type="text" class="form-control" placeholder="Your name" readonly="@isUserReadonly"/>
+        </div>
+        <div class="col-6">
+            <textarea @bind="messageInput" class="form-control" placeholder="Start typing..."></textarea>
+        </div>
+        <div class="col-3">
+            <button type="button" @onclick="Send" disabled="@(!IsConnected)" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private HubConnection _hubConnection;
+    private List<UserMessage> userMessages = new();
+    private string userNameInput;
+    private string messageInput;
+    private bool isUserReadonly = false;
+
+    public bool IsConnected => _hubConnection.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+        _hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            userMessages.Add(new UserMessage
+            {
+                Username = user,
+                Message = message,
+                IsCurrentUser = user == userNameInput,
+                DateSent = DateTime.Now
+            });
+            StateHasChanged();
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (!string.IsNullOrEmpty(userNameInput) && !string.IsNullOrEmpty(messageInput))
+        {
+            await _hubConnection.SendAsync("SendMessage", userNameInput, messageInput);
+            isUserReadonly = true;
+            messageInput = string.Empty;   // empty out the message box after sending the message
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+}
