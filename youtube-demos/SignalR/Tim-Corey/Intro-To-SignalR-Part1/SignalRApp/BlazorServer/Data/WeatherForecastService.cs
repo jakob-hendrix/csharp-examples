@@ -1,4 +1,4 @@
-namespace SignalRApp.Data
+namespace BlazorServer.Data
 {
     public class WeatherForecastService
     {
