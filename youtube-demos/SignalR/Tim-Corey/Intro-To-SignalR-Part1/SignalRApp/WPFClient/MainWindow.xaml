@@ -15,8 +15,23 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="openConnection" Grid.Row="0" HorizontalAlignment="Center" Padding="20 10" Margin="20">
+        <Button x:Name="openConnection" Grid.Row="0" 
+                HorizontalAlignment="Center" 
+                Padding="20 10" Margin="20">
             Connect
         </Button>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
+            <TextBox x:Name="messageInput" MinWidth="300" Margin="20" />
+            <Button x:Name="sendMessage" Padding="20 10" Margin="20">
+                Send
+            </Button>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2" Margin="20" MaxHeight="200" 
+                      VerticalScrollBarVisibility="Auto">
+            <ListBox x:Name="messages" HorizontalAlignment="Stretch"
+                     Padding="20 10" BorderThickness="0"/>
+        </ScrollViewer>
     </Grid>
 </Window>
