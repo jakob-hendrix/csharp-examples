@@ -11,12 +11,19 @@ namespace WPFClient;
 public partial class MainWindow : Window
 {
     HubConnection connection;
+    HubConnection counterConnection;
 
     public MainWindow()
     {
         InitializeComponent();
         connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:7181/chat")
+            .WithAutomaticReconnect()
+            .Build();
+
+
+        counterConnection= new HubConnectionBuilder()
+            .WithUrl("https://localhost:7181/counterhub")
             .WithAutomaticReconnect()
             .Build();
 
@@ -98,6 +105,32 @@ public partial class MainWindow : Window
         try
         {
             await connection.InvokeAsync("SendMessage", "WPF Client", messageInput.Text);
+        }
+        catch (Exception exception)
+        {
+            messages.Items.Add(exception.Message);
+        }
+    }
+
+    private async void openCounter_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await counterConnection.StartAsync();
+
+        }
+        catch (Exception exception)
+        {
+            // doesn't need the dispatcher.invoke since it's on the UI thread
+            messages.Items.Add(exception.Message);
+        }
+    }
+
+    private async void incrementCounter_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await counterConnection.InvokeAsync("AddToTotal", "WPF Client", 1);
         }
         catch (Exception exception)
         {
