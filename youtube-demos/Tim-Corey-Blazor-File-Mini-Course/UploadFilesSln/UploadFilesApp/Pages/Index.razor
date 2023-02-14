@@ -1,9 +1,73 @@
 ﻿@page "/"
+@inject IConfiguration config
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Upload Demo App</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Upload Demo</h1>
 
-Welcome to your new app.
+<InputFile OnChange="@LoadFiles" multiple />
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@if (_errors.Count > 0)
+{
+    <h2>Errors</h2>
+    <ul class="text-danger">
+        @foreach (var error in _errors)
+        {
+            <li>@error</li>
+        }
+    </ul>
+}
+
+@code
+{
+    private long _maxFileSize = 1024 * 1024 * 3; // 1024 bytes = 1 kb * 1024 = 1 Mb
+    private int _maxAllowedFiles = 3;
+    private List<string> _errors = new();
+
+    // when the file upload picker is closed with Ok
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        _errors.Clear();
+        if (e.FileCount > _maxAllowedFiles)
+        {
+            _errors.Add($"Error: Attempting to upload {e.FileCount} files, but only {_maxAllowedFiles} files are allowed.");
+            return;
+        }
+
+        // Don't trust the user
+        foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
+        {
+            try
+            {
+                // Get a new random file name with the extension of the base file
+                string newFileName = Path.ChangeExtension(
+                    Path.GetRandomFileName(), 
+                    Path.GetExtension(file.Name));
+
+                string storagePathBase = config.GetValue<string>("FileStorage");
+                if (storagePathBase == null)
+                {
+                    throw new NullReferenceException("Config key for FileStorage");
+                }
+
+                string storagePath = Path.Combine(storagePathBase, "jakob");   
+                string path = Path.Combine(storagePath,newFileName);
+
+                // typically, apps are run under a service account. That account would need permission
+                Directory.CreateDirectory(storagePath);
+
+                // open up the connection to the new file
+                // the 'using' will properly close the stream when we hit the '}'
+                await using FileStream fs = new(path, FileMode.Create);
+
+                // read the incoming file into our new file on disc
+                await file.OpenReadStream(_maxFileSize).CopyToAsync(fs);
+            }
+            catch (Exception ex)
+            {
+                // be careful of using the incoming file name
+                _errors.Add($"File: {file.Name} Error: {ex.Message}");
+            }
+        }
+    }
+}
