@@ -5,7 +5,11 @@
 
 <h1>Upload Demo</h1>
 
-<InputFile OnChange="@LoadFiles" multiple />
+@*
+    The 'accept' tag is only for that file type drop down - it doesn't actually validate
+    This is the '20% effort for 80% of the results' solution. For real, you'd need to look at the MIME type
+*@
+<InputFile OnChange="@LoadFiles" class="form-control" multiple accept=".jpeg,.txt"/>
 
 @if (_errors.Count > 0)
 {
