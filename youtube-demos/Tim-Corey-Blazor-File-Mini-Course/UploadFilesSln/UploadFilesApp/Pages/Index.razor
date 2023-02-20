@@ -1,15 +1,31 @@
 ﻿@page "/"
+@using UploadFilesApp.Data
 @inject IConfiguration config
 
 <PageTitle>Upload Demo App</PageTitle>
 
 <h1>Upload Demo</h1>
 
-@*
-    The 'accept' tag is only for that file type drop down - it doesn't actually validate
-    This is the '20% effort for 80% of the results' solution. For real, you'd need to look at the MIME type
-*@
-<InputFile OnChange="@LoadFiles" class="form-control" multiple accept=".jpeg,.txt"/>
+<EditForm Model="newCustomer" OnValidSubmit="SubmitForm">
+    <div>
+        <label for="firstName">First Name:</label>
+        <InputText id="firstName" class="form-control" @bind-Value="newCustomer.FirstName" />
+    </div>
+    <div>
+        <label for="lastName">LastName:</label>
+        <InputText id="lastName" class="form-control" @bind-Value="newCustomer.LastName" />
+    </div>
+    <div>
+        <label for="profilePicture">Profile Picture:</label>
+        @*
+            The 'accept' tag is only for that file type drop down - it doesn't actually validate
+            This is the '20% effort for 80% of the results' solution. For real, you'd need to look at the MIME type
+        *@  
+        <InputFile OnChange="@LoadFiles" class="form-control" accept=".jpeg,.txt"/>
+    </div>
+    <button class="btn btn-primary mt-3" type="submit">Create Customer</button>
+</EditForm>
+
 
 @if (_errors.Count > 0)
 {
@@ -27,51 +43,119 @@
     private long _maxFileSize = 1024 * 1024 * 3; // 1024 bytes = 1 kb * 1024 = 1 Mb
     private int _maxAllowedFiles = 3;
     private List<string> _errors = new();
+    private CustomerModel newCustomer = new();
+    private IBrowserFile? _file;
+
+    private async Task SubmitForm()
+    {
+        try
+        {
+            // process the file and upload the model
+            string relativePath = await CaptureFile();
+            newCustomer.FileName = relativePath;
+        }
+        catch (Exception ex)
+        {
+            _errors.Add($"Errors: {ex.Message}");
+        }
+    }
 
     // when the file upload picker is closed with Ok
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
-        _errors.Clear();
-        if (e.FileCount > _maxAllowedFiles)
+        _file = e.File; // reference the file
+    }
+
+    private async Task<string> CaptureFile()
+    {
+        string username = "jakob";
+
+        if (_file is null)
         {
-            _errors.Add($"Error: Attempting to upload {e.FileCount} files, but only {_maxAllowedFiles} files are allowed.");
-            return;
+            // return empty string since the return value is being inserted into customer model
+            return "";
         }
 
-        // Don't trust the user
-        foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
+        try
         {
-            try
+            // Get a new random file name with the extension of the base file
+            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(_file.Name));
+
+            string storagePathBase = config.GetValue<string>("FileStorage");
+            if (storagePathBase == null)
             {
-                // Get a new random file name with the extension of the base file
-                string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
-
-                string storagePathBase = config.GetValue<string>("FileStorage");
-                if (storagePathBase == null)
-                {
-                    throw new NullReferenceException("Config key for FileStorage");
-                }
-
-                string storagePath = Path.Combine(storagePathBase, "jakob");   // with username
-                string path = Path.Combine(storagePath,newFileName);
-
-                // typically, apps are run under a service account. That account would need permission
-                Directory.CreateDirectory(storagePath);
-
-                // open up the connection to the new file
-                // the 'using' will properly close the stream when we hit the '}'
-                await using FileStream fs = new(path, FileMode.Create);
-
-                // read the incoming file into our new file on disc
-                await file
-                    .OpenReadStream(_maxFileSize)
-                    .CopyToAsync(fs);
+                throw new NullReferenceException("Config key for FileStorage");
             }
-            catch (Exception ex)
-            {
-                // be careful of using the incoming file name
-                _errors.Add($"File: {file.Name} Error: {ex.Message}");
-            }
+
+            string storagePath = Path.Combine(storagePathBase, username);   // with username
+            string path = Path.Combine(storagePath,newFileName);
+            string relativePath = Path.Combine(username, newFileName);
+
+            // typically, apps are run under a service account. That account would need permission
+            Directory.CreateDirectory(storagePath);
+
+            // open up the connection to the new file
+            // the 'using' will properly close the stream when we hit the '}'
+            await using FileStream fs = new(path, FileMode.Create);
+
+            // read the incoming file into our new file on disc
+            await _file
+                .OpenReadStream(_maxFileSize)
+                .CopyToAsync(fs);
+
+            return relativePath;
+        }
+        catch (Exception ex)
+        {
+            // be careful of using the incoming file name
+            _errors.Add($"File: {_file.Name} Error: {ex.Message}");
+            throw;
         }
     }
+
+    //private async Task OldLoadFilesMethodFromVideo2(InputFileChangeEventArgs e)
+    //{
+    //    _errors.Clear();
+    //    if (e.FileCount > _maxAllowedFiles)
+    //    {
+    //        _errors.Add($"Error: Attempting to upload {e.FileCount} files, but only {_maxAllowedFiles} files are allowed.");
+    //        return;
+    //    }
+
+    //// Don't trust the user
+    //    foreach (var file in e.GetMultipleFiles(_maxAllowedFiles))
+    //    {
+    //        try
+    //        {
+    //// Get a new random file name with the extension of the base file
+    //            string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
+
+    //            string storagePathBase = config.GetValue<string>("FileStorage");
+    //            if (storagePathBase == null)
+    //            {
+    //                throw new NullReferenceException("Config key for FileStorage");
+    //            }
+
+    //            string storagePath = Path.Combine(storagePathBase, "jakob");   // with username
+    //            string path = Path.Combine(storagePath,newFileName);
+
+    //// typically, apps are run under a service account. That account would need permission
+    //            Directory.CreateDirectory(storagePath);
+
+    //// open up the connection to the new file
+    //// the 'using' will properly close the stream when we hit the '}'
+    //            await using FileStream fs = new(path, FileMode.Create);
+
+    //// read the incoming file into our new file on disc
+    //            await file
+    //                .OpenReadStream(_maxFileSize)
+    //                .CopyToAsync(fs);
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //// be careful of using the incoming file name
+    //            _errors.Add($"File: {file.Name} Error: {ex.Message}");
+    //        }
+    //    }
+    //}
 }
