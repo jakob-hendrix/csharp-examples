@@ -40,9 +40,7 @@
             try
             {
                 // Get a new random file name with the extension of the base file
-                string newFileName = Path.ChangeExtension(
-                    Path.GetRandomFileName(), 
-                    Path.GetExtension(file.Name));
+                string newFileName = Path.ChangeExtension(Path.GetRandomFileName(), Path.GetExtension(file.Name));
 
                 string storagePathBase = config.GetValue<string>("FileStorage");
                 if (storagePathBase == null)
@@ -50,7 +48,7 @@
                     throw new NullReferenceException("Config key for FileStorage");
                 }
 
-                string storagePath = Path.Combine(storagePathBase, "jakob");   
+                string storagePath = Path.Combine(storagePathBase, "jakob");   // with username
                 string path = Path.Combine(storagePath,newFileName);
 
                 // typically, apps are run under a service account. That account would need permission
@@ -61,7 +59,9 @@
                 await using FileStream fs = new(path, FileMode.Create);
 
                 // read the incoming file into our new file on disc
-                await file.OpenReadStream(_maxFileSize).CopyToAsync(fs);
+                await file
+                    .OpenReadStream(_maxFileSize)
+                    .CopyToAsync(fs);
             }
             catch (Exception ex)
             {
