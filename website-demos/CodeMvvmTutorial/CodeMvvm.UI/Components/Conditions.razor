@@ -1,0 +1,41 @@
+﻿@page "/conditions"
+@using CodeMvvm.ViewModels
+@using System.ComponentModel
+@inject ConditionViewModel ViewModel
+@implements IDisposable
+
+<h3>Conditions</h3>
+@foreach (var condition in ViewModel.Conditions)
+{
+    <div>
+        <p>#@condition.Id: @condition.Name</p>
+        <ul>
+            <li>@condition.Description</li>
+            <li>@condition.SpellLevel</li>
+            <li><a href="@condition.URL">Link</a></li>
+        </ul>
+    </div>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // subscribe to the propertychanged event on our view model
+        ViewModel.PropertyChanged += HandleStateChangeEvent;
+        await base.OnInitializedAsync();
+    }
+
+    private async void HandleStateChangeEvent(object sender, PropertyChangedEventArgs e)
+    {
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        ViewModel.PropertyChanged -= HandleStateChangeEvent;
+    }
+
+}

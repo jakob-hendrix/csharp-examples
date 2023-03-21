@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMvvm.Entities", "CodeMv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMvvm.Data", "CodeMvvm.Data\CodeMvvm.Data.csproj", "{17199D34-5848-4446-96EC-9B88565625FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeMvvm.ViewModels", "CodeMvvm.ViewModels\CodeMvvm.ViewModels.csproj", "{CE82C513-7DA4-41AC-A073-85B76729BF0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{17199D34-5848-4446-96EC-9B88565625FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17199D34-5848-4446-96EC-9B88565625FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17199D34-5848-4446-96EC-9B88565625FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE82C513-7DA4-41AC-A073-85B76729BF0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE82C513-7DA4-41AC-A073-85B76729BF0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE82C513-7DA4-41AC-A073-85B76729BF0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE82C513-7DA4-41AC-A073-85B76729BF0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
